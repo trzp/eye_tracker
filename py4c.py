@@ -20,6 +20,29 @@ import math
 
 class Py4C(threading.Thread):
     def __init__(self,filter = 3,userport = 5150,userip = '127.0.0.1',tobii4Cport=5151,tobii4Cip='127.0.0.1'):
+        ## stream engine依赖于设备自带的tobii eye X interaction软件。使用时需要将其打开（开，眼动仪回亮起）。
+        ## 严重怀疑其内部是集成的类似mqtt的协议，向订阅端发送数据。当interaction软件开启gaze trace时，不影响
+        ## stream engine获取数据
+        
+        ## 正确的使用操作是通过tobii eye interaction校准眼动仪，然后通过stream engine获取数据。interaction软件
+        ## 将会根据屏幕分辨率等来校准眼动仪，发送给stream engine的数据是校准过的数据。注意，应当保持电脑显示器
+        ## 分辨率与校准时一致，否则映射会出现问题。
+        
+        ## 该脚本会调用tobii_4c_app.exe从stream engine处获取数据。其网络参数除非和其他socket应用存在端口冲突，
+        ## 一般无需修改。filter参数为整形，为对眼动仪数据进行均值平滑的长度参数，即平滑每filter帧（求均值）。
+        ## 4c刷新率为33hz
+        
+        ## 数据接口
+        ## x,y = Py4C.gazeXY
+        ## x,y,平滑后的数据。正常数据范围0-1，小于0和大于1都是超出了边界
+        
+        ## flg,x,y = Py4C.gazepos
+        ## flg 数据正常指示，1-正常，0-越界，
+        ## x,y 当flg=1时：返回屏幕上的坐标
+        ## x,y 当flg=0是：返回的x,y为眼动仪原始数据，即Py4C.gazeXY
+        
+        ## 注意：使用完毕后调用Py4C.quit()关闭程序。
+
         threading.Thread.__init__(self)
 
         self.useraddr = (userip,userport)
