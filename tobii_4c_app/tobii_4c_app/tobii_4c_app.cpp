@@ -12,7 +12,7 @@
 #include <windows.h>  
 
 #pragma comment(lib, "ws2_32.lib")
-#pragma comment( linker, "/subsystem:windows /entry:mainCRTStartup" )  //不显示控制台
+//#pragma comment( linker, "/subsystem:windows /entry:mainCRTStartup" )  //不显示控制台
 
 
 //全局，用于在主函数和回调函数中共享数据
@@ -95,6 +95,7 @@ int main(int argc, char*  argv[])
 		my_siLocal.sin_family = AF_INET;
 		my_siLocal.sin_port = htons(my_port);
 		my_siLocal.sin_addr.s_addr = inet_addr(argv[4]);
+		printf("args: %s %s %s %s",argv[0],argv[1],argv[2],argv[3]);
 	}
 
 	
@@ -199,7 +200,7 @@ int main(int argc, char*  argv[])
 
 	error = tobii_api_destroy(api);
 	assert(error == TOBII_ERROR_NO_ERROR);
-
+	printf("4C unsubscribed !");
 	return 0;
 }
 
